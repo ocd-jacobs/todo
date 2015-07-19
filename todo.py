@@ -460,8 +460,7 @@ def getDoneDict():
 
 def writeTasks(taskDict):
     """a utility method to write a dictionary of tasks to the TODO file"""
-    keys = list(taskDict.keys())
-    keys.sort()
+    keys = sorted(taskDict.keys())
     backup(TODO_FILE, TODO_BACKUP)
     f = open(TODO_FILE, "w")
     for key in keys:
@@ -469,8 +468,7 @@ def writeTasks(taskDict):
     f.close()
 
 def writeDone(doneDict):
-    keys = list(doneDict.keys())
-    keys.sort()
+    keys = sorted(doneDict.keys())
     backup(DONE_FILE, DONE_BACKUP)
     f = open(DONE_FILE, "w")
     for key in keys:
@@ -647,7 +645,7 @@ def list(patterns=None, escape=True, \
 
     #items.sort() # sort by todo.txt order
     if (not numericSort):
-        items.sort(alphaSort) # sort by tasks alphbetically
+        items.sort(key=alphaSort) # sort by tasks alphbetically
 
     #items.reverse() # reverse the sort
     if sortReverse:
@@ -786,8 +784,7 @@ def displaySummary(dict, name, listDone, type):
         tword = 0
         tprio = 0
 
-        keys = list(dict.keys())
-        keys.sort()
+        keys = sorted(dict.keys())
         for p in keys:
             # If not listDone only display those with entries in todo list
             if not dict[p]['ntask'] and not listDone: continue
@@ -915,16 +912,12 @@ def timeline():
     archive()
     timeline.main([TODO_FILE])
 
-def alphaSort(a, b):
+def alphaSort(a):
     """sorting function to sort tasks alphabetically"""
     if sortIgnoreCase:
-        if (a[5:].lower() > b[5:].lower()): return 1
-        elif (a[5:].lower() < b[5:].lower()): return -1
-        else: return 0
+        return(a[5:].lower())
     else:
-        if (a[5:] > b[5:]): return 1
-        elif (a[5:] < b[5:]): return -1
-        else: return 0
+        return(a[5:])
 
 def highlightWindows(matchobj):
     """color replacement function used when highlighting priorities"""
