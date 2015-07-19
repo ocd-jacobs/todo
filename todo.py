@@ -1,23 +1,41 @@
 #!/usr/bin/env python
+# ******************************************************************************
+# File    : TODO.PY
+# ------------------------------------------------------------------------------
+# Author  : J.M. Jacobs
+# Date    : 19 July 2015
+# Version : 1.0
+#
+# (C) 2015: This program is free software: you can redistribute it and/or modify
+#           it under the terms of the GNU General Public License as published by
+#           the Free Software Foundation, either version 3 of the License, or
+#           (at your option) any later version.
+#
+#           This program is distributed in the hope that it will be useful,
+#           but WITHOUT ANY WARRANTY; without even the implied warranty of
+#           MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#           GNU General Public License for more details.
+#
+#           You should have received a copy of the GNU General Public License
+#           along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+# Notes   : Python 3 command line todo.txt manager
+#
+#           Based on ya-todo.py by Craig M. Stimmel
+#           (https://github.com/abztrakt/ya-todo-py)
+#
+#           More on todo.txt can be found at www.todotxt.com
+# ******************************************************************************
 """
-TODO.TXT Manager - Python Version
-Author          : Shane Koster <shane.koster@gmail.com>
-Modified by     : Graham Davies <grahamdaviez@gmail.com>
-Concept by      : Gina Trapani (ginatrapani@gmail.com
-License         : GPL, http://www.gnu.org/copyleft/gpl.html
-More info       : http://todotxt.com
-Project Page    : http://code.google.com/p/todotxt
-Direct link     : http://todotxt.googlecode.com/svn/trunk/todo.py
-Project todo.txt: http://todotxt.googlecode.com/svn/trunk/todo.txt
+Command line todo.txt manager written in Python 3
 """
 
-__version__   = "1.8.1-py-beta"
-__revision__  = "$Revision: 217 $"
-__date__      = "2006/07/29"
-__author__    = "Shane Koster (shane.koster@gmail.com)"
+__version__   = "1.0"
+__date__      = "19-07-2015"
+__author__    = "John Jacobs (jjacobs@xs4all.nl)"
 __copyright__ = "Copyright 2006, Gina Trapani"
 __license__   = "GPL"
-__history__   = "See http://todotxt.googlecode.com/svn/trunk/CHANGELOG"
+__history__   = "See https://github.com/ocd-jacobs/todo/commits/master/todo.py"
 
 # Set the full path to your TODO directory here
 # leave blank to use default ~/todo or ~\My Documents directories
