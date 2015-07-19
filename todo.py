@@ -609,9 +609,9 @@ def list(patterns=None, escape=True, \
     """ List todo items.
 
         patterns  - the pattern to search for in the TODO files.
-        escape - switch, wether the pattern is provided by the
+        escape    - switch, wether the pattern is provided by the
                     user and therefore has to be escaped.
-        listDone   - switch, wether the list should show only the content
+        listDone  - switch, wether the list should show only the content
                     of the TODO file (listDone=False) or the contents
                     of the TODO and the DONE files (listDone=True)
         remove    - tasks matching pattern are to be removed
@@ -621,6 +621,7 @@ def list(patterns=None, escape=True, \
     items = []
     temp = {}
     tasks = getTaskDict()
+    total_tasks = len(tasks)
 
     if listDone:
         # Add done dictionary to existing tasks
@@ -639,10 +640,6 @@ def list(patterns=None, escape=True, \
     for k,v in tasks.items():
         items.append("%3d: %s" % (k, v))
 
-    # Print this before the tasks to make jabber bot pretty
-    if verbose:
-        print("todo.py: %d tasks in %s:" % ( len(items), TODO_FILE ))
-
     #items.sort() # sort by todo.txt order
     if (not numericSort):
         items.sort(key=alphaSort) # sort by tasks alphbetically
@@ -655,6 +652,7 @@ def list(patterns=None, escape=True, \
     re_late = re.compile(r"(.*)\{due: (....)-(..)-(..)\}(.*)")
     re_late2 = re.compile(r"(.*)\{due: (....)-(..)-(..) (..):(..)\}(.*)")
     re_anyext = re.compile(r"\{[^\}]*\}")
+    print('')
     for item in items:
         if not showExtensions:
             item = re_anyext.sub("", item)
@@ -665,6 +663,12 @@ def list(patterns=None, escape=True, \
             print(item)
         else:
             print(re_late2.sub(highlightLate2, (re_late.sub(highlightLate, re_pri.sub(highlightPriority, item)))))
+    print('--')
+    if verbose:
+        print("TODO: %d out of %d tasks in %s shown." % ( len(items), total_tasks, TODO_FILE.lower() ))
+    else:
+        print("TODO: %d out of %d tasks shown." % ( len(items), total_tasks ))
+
 
 def findPatterns(tasks, patterns, escape=True, matchAny=False, remove=False):
     """Return a task list based on a pattern - use remove for negate"""
