@@ -268,7 +268,7 @@ def help(longmessage = False):
 
 
   Options:
-    -nc, -p        : Turns off colors
+    -p, --nc       : Turns off colors
     -V, --version  : prints version number
     -h, --help     : print help
     -n             : sort items by number not alphabeticaly
@@ -326,9 +326,9 @@ da,   doall NUMBER [NUMBER]...        Mark all items NUMBER as done
 
 
 Options:
- -p,  -nc       : Turns off colors
+ -p, --nc       : Turns off colors
  -t, --theme    : Specify color theme ANSI: light|dark|nocolor, Win: windark
- -V,  --version : Print version number
+ -V, --version  : Print version number
  -n             : sort items by number not alphabeticaly
  -i             : Make sort case sensitive
  -r             : Reverse the sort
