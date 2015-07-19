@@ -59,7 +59,7 @@ Options:
  -V,  --version : Print version number
  -d, --todo-dir : Use specified directory for files
 """ % (__version__, __revision__[1:-1])
-    print text
+    print(text)
     sys.exit()
 
 def setDirs(dir):
@@ -68,7 +68,7 @@ def setDirs(dir):
     RECUR_FILE   = dir + os.path.sep + "recur.txt"
     RECUR_BACKUP = dir + os.path.sep + "recur.bak"
     TODO_FILE    = dir + os.path.sep + "todo.txt"
-    if verbose: print "Using file ", RECUR_FILE
+    if verbose: print("Using file ", RECUR_FILE)
     return True
 
 def singleDay(rem, today):
@@ -89,7 +89,7 @@ def singleDoW(rem, today):
         if event.tm_wday == today.tm_wday:
             return True, True
         else: return True, False
-    except (ValueError), why:
+    except (ValueError) as why:
         return False, False
 
 def monthDay(rem, today, warn=False, rep=False):
@@ -110,7 +110,7 @@ def monthDay(rem, today, warn=False, rep=False):
         if event.tm_mon == today.tm_mon and event.tm_mday == today.tm_mday:
             return True, True
         else: return True, False
-    except (ValueError), why:
+    except (ValueError) as why:
         return False, False
 
 def monthDayYear(rem, today, warn=False, rep=False):
@@ -121,7 +121,7 @@ def monthDayYear(rem, today, warn=False, rep=False):
                 and event.tm_mday == today.tm_mday):
             return True, True
         else: return True, False
-    except (ValueError), why:
+    except (ValueError) as why:
         return False, False
 
 def hasWarning(rem, today):
@@ -223,8 +223,8 @@ def parseREM(rem):
 def addTodayTasks(file):
     """Add tasks occuring today from a file to the todo list"""
     rem = todo.getDict(file)
-    for k,v in rem.iteritems():
-        if verbose: print "%3d: %s" % (k, v)
+    for k,v in rem.items():
+        if verbose: print("%3d: %s" % (k, v))
         re_date = re.compile(r"{([^}]+)} ")
         date = re.search(re_date, v)
         if date:
@@ -232,11 +232,11 @@ def addTodayTasks(file):
             if isToday:
                 task = re.sub(re_date, "", v)
                 if taskExists(task):
-                    if verbose: print "Exists: " + task
+                    if verbose: print("Exists: " + task)
                     continue
                 todo.add(task)
         else:
-            if verbose: print "No date found for ", v
+            if verbose: print("No date found for ", v)
 
 # new code to handle dupes 2007/07/25
 def taskExists(rem):
@@ -253,8 +253,8 @@ if __name__ == "__main__":
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'hVvqd:',\
             ['help', 'version','todo-dir='])
-    except (getopt.GetoptError), why:
-        print "Sorry - option not recognized.  Try -h for help"
+    except (getopt.GetoptError) as why:
+        print("Sorry - option not recognized.  Try -h for help")
         sys.exit()
 
 
@@ -262,7 +262,7 @@ if __name__ == "__main__":
         if o in ["-h"]:
             help()
         if o in ["-V", "--version"]:
-            print __version__, __revision__[1:-1]
+            print(__version__, __revision__[1:-1])
             sys.exit()
         if o in ['-v']:
             """Specify verbose from command line"""

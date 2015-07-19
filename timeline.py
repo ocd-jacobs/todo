@@ -52,7 +52,7 @@ __history__ = """
 
 def getDict(file=""):
     if file == "":
-        if os.environ.has_key("TODO_DIR"):
+        if "TODO_DIR" in os.environ:
             dir = os.environ["TODO_DIR"]
         if os.name == 'nt':
             if not dir: dir = os.path.expanduser(r"~\My Documents")
@@ -73,13 +73,13 @@ def getDict(file=""):
             count = count + 1
             tasks[count] = line.rstrip()
         return tasks
-    except (IOError, os.error), why:
+    except (IOError, os.error) as why:
         return {}
 
 
 
 def usage():
-    print "USAGE:  %s [todo.txt]"% (sys.argv[0], )
+    print("USAGE:  %s [todo.txt]"% (sys.argv[0], ))
 
 def conditional(b, rt, rf):
     if b:
@@ -98,7 +98,7 @@ def main(argv):
     
     pending = []
     
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         matches = re_duedate.search(v)
         if matches != None:
             item = matches.group(1) + matches.group(5)
@@ -120,7 +120,7 @@ def main(argv):
     if len(pending) > 0:
         firststart = pending[0][1]
         for p in pending:
-            print "%s %s %s %s" \
+            print("%s %s %s %s" \
                 % (p[0] + (maxlength - len(p[0])) * " ",\
                 p[1].strftime("%m/%d"),\
                 (p[1] - firststart).days * " " \
@@ -130,7 +130,7 @@ def main(argv):
                 + (p[2] - rightnow).days * "-" \
                 + (rightnow - p[2]).days * "!" \
                 + "|" ,\
-                p[2].strftime("%m/%d"))
+                p[2].strftime("%m/%d")))
 
 if __name__ == "__main__":
     main(sys.argv[1:])

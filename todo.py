@@ -118,11 +118,11 @@ from datetime import date
 def usage():
     text =  "Usage: todo.py [options] [ACTION] [PARAM...] \n"
     text += "Try `todo.py -h' for more information."
-    print text
+    print(text)
 
 def help(longmessage = False):
     if longmessage:
-        print __doc__
+        print(__doc__)
         text = "  Usage: " + sys.argv[0] + """ [options] [ACTION] [PARAM...]
 
   Actions:
@@ -338,7 +338,7 @@ Options:
  * addition of a to abbreviated form displays done.txt also - eg. lsa, lsra
 
 """
-    print text
+    print(text)
     sys.exit()
 
 def formatDate(datestring):
@@ -359,7 +359,7 @@ def formatDate(datestring):
             except ValueError:
                 continue
         if not Parsed:
-            print "Can't parse that date, try year-month-day hour:minute"
+            print("Can't parse that date, try year-month-day hour:minute")
             sys.exit(1)
     if t[0] == 1900:
         d = datetime.datetime(time.localtime().tm_year,*t[1:5])
@@ -376,14 +376,14 @@ def setDirs(dir):
     """Your todo/done/report.txt locations"""
     global TODO_DIR, TODO_FILE, DONE_FILE, REPORT_FILE, TODO_BACKUP, DONE_BACKUP, RECUR_FILE
 
-    if os.environ.has_key("TODO_DIR"):
+    if "TODO_DIR" in os.environ:
         dir = os.environ["TODO_DIR"]
     if os.name == 'nt':
         if not dir: dir = os.path.expanduser(r"~\My Documents")
     if not dir: dir = os.path.expanduser("~/todo")
 
     if not os.path.isdir(dir):
-        print "Can't open todo directory: %s" % dir
+        print("Can't open todo directory: %s" % dir)
         sys.exit()
     TODO_DIR    = dir
     TODO_FILE   = dir + os.path.sep + "todo.txt"
@@ -400,7 +400,7 @@ def setTheme(theme):
 
     # Set the theme from BGCOL environment variable
     # only set if not set by cmdline flag
-    if not theme and os.environ.has_key('BGCOL'):
+    if not theme and 'BGCOL' in os.environ:
         if os.environ['BGCOL'] == 'light':
             theme = 'light'
         elif os.environ['BGCOL'] == 'dark':
@@ -447,7 +447,7 @@ def getDict(file):
             count = count + 1
             tasks[count] = line.rstrip()
         return tasks
-    except (IOError, os.error), why:
+    except (IOError, os.error) as why:
         return {}
 
 def getTaskDict():
@@ -460,7 +460,7 @@ def getDoneDict():
 
 def writeTasks(taskDict):
     """a utility method to write a dictionary of tasks to the TODO file"""
-    keys = taskDict.keys()
+    keys = list(taskDict.keys())
     keys.sort()
     backup(TODO_FILE, TODO_BACKUP)
     f = open(TODO_FILE, "w")
@@ -469,7 +469,7 @@ def writeTasks(taskDict):
     f.close()
 
 def writeDone(doneDict):
-    keys = doneDict.keys()
+    keys = list(doneDict.keys())
     keys.sort()
     backup(DONE_FILE, DONE_BACKUP)
     f = open(DONE_FILE, "w")
@@ -483,7 +483,7 @@ def add(text):
     f = open(TODO_FILE, "a")
     f.write(text + os.linesep)
     f.close()
-    if not quiet: print "Added: ", text
+    if not quiet: print("Added: ", text)
 
 def setPriority(text):
     """Handle priority if exisiting in supplied text"""
@@ -504,19 +504,19 @@ def setPriority(text):
 def append(item, text=""):
     """Append text to a given task"""
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     tasks[item] = " ".join([tasks[item], text])
     writeTasks(tasks)
-    if not quiet: print "Append: ", text
+    if not quiet: print("Append: ", text)
 
 def prepend(item, text=""):
     """Prepend text to a given task.
        Preserve a priority at the beginning of the line, if one exists."""
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     # handle priority, if existing
     re_pri = re.compile(r"^\([A-Z]\) ")
@@ -528,35 +528,35 @@ def prepend(item, text=""):
     else:
         tasks[item] = " ".join([text, tasks[item]])
     writeTasks(tasks)
-    if not quiet: print "Prepend: %d %s" % (item, tasks[item])
+    if not quiet: print("Prepend: %d %s" % (item, tasks[item]))
 
 def archive():
     tasks = getTaskDict()
     done = getDoneDict()
     tasksCopy = tasks.copy()
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         if v.startswith("x"):
             done[len(done) + 1] = tasksCopy.pop(k)
     writeDone(done)
     writeTasks(tasksCopy)
-    if verbose: print "Archive done"
+    if verbose: print("Archive done")
 
 def delete(item):
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     deleted = tasks.pop(item)
     writeTasks(tasks)
-    if not quiet: print "Deleted: ", deleted
+    if not quiet: print("Deleted: ", deleted)
 
 def backup(orig, backup):
     """Make a copy of the file before writing data"""
     if not os.path.isfile(orig): return
     try:
        copyfile(orig, backup)
-    except (IOError, os.error), why:
-       print "Can't copy %s to %s: %s" % (orig, backup, str(why))
+    except (IOError, os.error) as why:
+       print("Can't copy %s to %s: %s" % (orig, backup, str(why)))
        sys.exit()
 
 def do(items, comments=None):
@@ -566,8 +566,8 @@ def do(items, comments=None):
     tasks = getTaskDict()
     for item in items:
         item = int(item)
-        if (not tasks.has_key(item)):
-            print "%d: No such todo." % item
+        if (item not in tasks):
+            print("%d: No such todo." % item)
             continue
         # done items shouldn't be done again
         if isDone(tasks[item]): continue
@@ -579,7 +579,7 @@ def do(items, comments=None):
             tasks[item] = addComment(tasks[item], comments)
 
         date = time.strftime("%Y-%m-%d", time.localtime())
-        print "Done %d: %s" % (item, tasks[item])
+        print("Done %d: %s" % (item, tasks[item]))
         tasks[item] = " ".join(["x", date, tasks[item]])
     writeTasks(tasks)
     archive()
@@ -604,7 +604,7 @@ def done(item):
     f = open(DONE_FILE, "a")
     f.write(text + os.linesep)
     f.close()
-    if not quiet: print "Done: %s" % item
+    if not quiet: print("Done: %s" % item)
 
 def list(patterns=None, escape=True, \
         listDone=False, matchAny=False, dates=None, remove=False, showExtensions=True):
@@ -628,7 +628,7 @@ def list(patterns=None, escape=True, \
         # Add done dictionary to existing tasks
         done  = getDoneDict()
         new = len(tasks)
-        for i in xrange(len(done)):
+        for i in range(len(done)):
             new += 1
             tasks[new] = done[i+1]
 
@@ -638,12 +638,12 @@ def list(patterns=None, escape=True, \
     if dates: tasks = addDates(tasks, dates)
 
     # Format gathered tasks
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         items.append("%3d: %s" % (k, v))
 
     # Print this before the tasks to make jabber bot pretty
     if verbose:
-        print "todo.py: %d tasks in %s:" % ( len(items), TODO_FILE )
+        print("todo.py: %d tasks in %s:" % ( len(items), TODO_FILE ))
 
     #items.sort() # sort by todo.txt order
     if (not numericSort):
@@ -661,17 +661,17 @@ def list(patterns=None, escape=True, \
         if not showExtensions:
             item = re_anyext.sub("", item)
         if os.name == "nt":
-            print re_pri.sub(highlightWindows, item)
+            print(re_pri.sub(highlightWindows, item))
             set_wincolor(DEFAULT)
         elif theme == 'nocolor':
-            print item
+            print(item)
         else:
-            print re_late2.sub(highlightLate2, (re_late.sub(highlightLate, re_pri.sub(highlightPriority, item))))
+            print(re_late2.sub(highlightLate2, (re_late.sub(highlightLate, re_pri.sub(highlightPriority, item)))))
 
 def findPatterns(tasks, patterns, escape=True, matchAny=False, remove=False):
     """Return a task list based on a pattern - use remove for negate"""
     temp = {}
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         # Match any or all tasks using matchAny switch
         match = True
         if matchAny: match = False
@@ -706,7 +706,7 @@ def hideInclude(tasks):
 def addDates(tasks, dates):
     """Match tasks with a dates in a date list"""
     temp = {}
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         match = False
         for date in dates:
             if (re.search(date, v, re.IGNORECASE)): match = True
@@ -717,7 +717,7 @@ def addDates(tasks, dates):
 def removeDone(tasks):
     """Remove done tasks from a task list"""
     temp = {}
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         if isDone(v):
             temp[k] = v
     return temp
@@ -732,20 +732,20 @@ def listKeywords():
     # Can this be cone with zip() ?
     done  = getDoneDict()
     new = len(tasks)
-    for i in xrange(len(done)):
+    for i in range(len(done)):
         new += 1
         tasks[new] = done[i+1]
 
     projects = {}
     contexts = {}
 
-    for k,v in tasks.iteritems():
+    for k,v in tasks.items():
         priority = hasPriority(v)
         words = v.split()
         for word in words:
             if len(word) < 2: continue
             if word[0:2] in ["p:", "p-"] or word.startswith("+"):
-                if not projects.has_key(word):
+                if word not in projects:
                     projects[word] = dict(ntask=0,ndone=0,tlist=[],dlist=[],priority=0)
                 if k <= numTasks:
                     projects[word]['ntask'] += 1
@@ -756,7 +756,7 @@ def listKeywords():
                     projects[word]['dlist'].append(k)
 
             if word[0:1] == "@":
-                if not contexts.has_key(word):
+                if word not in contexts:
                     contexts[word] = dict(ntask=0,ndone=0,tlist=[],dlist=[],priority=0)
                 if k <= numTasks:
                     contexts[word]['ntask'] += 1
@@ -775,18 +775,18 @@ def displaySummary(dict, name, listDone, type):
         for p in dict:
         # If not listDone only display those with entries in todo list
             if not dict[p]['ntask'] and not listDone: continue
-            print p
+            print(p)
 
     elif type == 'table':
 
-        print "%4s %4s %4s %4s %-20s %s" % ("Todo", "Done", "%Done", "#Pri",
-                name, "[Todo task numbers]")
+        print("%4s %4s %4s %4s %-20s %s" % ("Todo", "Done", "%Done", "#Pri",
+                name, "[Todo task numbers]"))
         tdone = 0
         ttodo = 0
         tword = 0
         tprio = 0
 
-        keys = dict.keys()
+        keys = list(dict.keys())
         keys.sort()
         for p in keys:
             # If not listDone only display those with entries in todo list
@@ -804,23 +804,23 @@ def displaySummary(dict, name, listDone, type):
                     row += "%d " % tnum
                 row = row.rstrip()
                 row += "]"
-            print row
+            print(row)
             ttodo += dict[p]['ntask']
             tdone += dict[p]['ndone']
             tprio += dict[p]['priority']
             tword += 1
         totalPercent = 0
         if tdone and ttodo: totalPercent = tdone / (tdone + ttodo) * 100.0
-        print "%4d %4d %4d %4d  %-20d Column Totals" % (ttodo, tdone, totalPercent, tprio, tword)
+        print("%4d %4d %4d %4d  %-20d Column Totals" % (ttodo, tdone, totalPercent, tprio, tword))
 
     else:
-        print "Please set the display type to simple or table"
+        print("Please set the display type to simple or table")
 
 def replace(item, text):
     """replace text to a given task"""
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     text = setPriority(text)
     tasks[item] = text
@@ -829,13 +829,13 @@ def replace(item, text):
 def sendToPrinter():
     try:
         os.execvp("todo_print.sh", ["todo_print.sh"])
-    except (IOError, os.error), why:
-        print "Problem with your printer script: %s" % str(why)
+    except (IOError, os.error) as why:
+        print("Problem with your printer script: %s" % str(why))
         sys.exit()
 
 def edit(file):
     """opens your todo.txt file with a local editor if found"""
-    if os.environ.has_key('EDITOR'):
+    if 'EDITOR' in os.environ:
         editor = os.environ['EDITOR']
     elif os.name == 'posix':
         editor = "/etc/alternatives/editor"
@@ -844,14 +844,14 @@ def edit(file):
         try:
             from subprocess import Popen
             retcode = Popen([editor, file])
-        except (IOError, os.error), why:
-            print "Problem with your editor %s: %s" % (editor, str(why))
+        except (IOError, os.error) as why:
+            print("Problem with your editor %s: %s" % (editor, str(why)))
             sys.exit()
     else:
         try:
             os.execvp(editor, [editor, file])
-        except (IOError, os.error), why:
-            print "Problem with your editor %s: %s" % (editor, str(why))
+        except (IOError, os.error) as why:
+            print("Problem with your editor %s: %s" % (editor, str(why)))
             sys.exit()
 
 def removeDuplicates():
@@ -860,26 +860,26 @@ def removeDuplicates():
     theSet = set(taskCopy.values())
     dupCount = len(taskCopy) - len(theSet)
     if dupCount > 0:
-        print "Removing %d duplicates." % (dupCount)
+        print("Removing %d duplicates." % (dupCount))
         count = 0
         tasks = {}
-        for k,v in taskCopy.iteritems():
+        for k,v in taskCopy.items():
             if v in theSet:
                 count += 1
                 tasks[ count ] = v
                 theSet.remove(v)
         writeTasks(tasks)
     else:
-        print "There are no duplicates to eliminate!"
+        print("There are no duplicates to eliminate!")
     sys.exit()
 
 def confirm():
-    print "Are you sure? (y/N)"
+    print("Are you sure? (y/N)")
     answer = sys.stdin.readline().strip()
     if answer == "y":
         return
     else:
-        if verbose: print "You said: '%s' - nothing changed." % answer
+        if verbose: print("You said: '%s' - nothing changed." % answer)
         sys.exit()
 
 def report():
@@ -899,8 +899,8 @@ def birdseye():
     try:
         import birdseye
     except ImportError:
-        print "birdseye.py not found. You may get it from:"
-        print "http://todotxt.googlecode.com/svn/trunk/birdseye.py"
+        print("birdseye.py not found. You may get it from:")
+        print("http://todotxt.googlecode.com/svn/trunk/birdseye.py")
         sys.exit()
     archive()
     birdseye.main([TODO_FILE, DONE_FILE])
@@ -909,8 +909,8 @@ def timeline():
     try:
         import timeline
     except ImportError:
-        print "timeline.py not found. You may get it from:"
-        print "http://todo-py.googlecode.com/svn/trunk/timeline.py"
+        print("timeline.py not found. You may get it from:")
+        print("http://todo-py.googlecode.com/svn/trunk/timeline.py")
         sys.exit()
     archive()
     timeline.main([TODO_FILE])
@@ -972,11 +972,11 @@ def highlightLate2(matchobj):
 def prioritize(item, newpriority):
     newpriority = newpriority.upper()
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     if (newpriority != "" and not re.match("[A-Z]", newpriority)):
-        print "Priority not recognized: " + newpriority
+        print("Priority not recognized: " + newpriority)
         sys.exit(1)
 
     re_pri = re.compile(r"\([A-Z]\) ")
@@ -1006,7 +1006,7 @@ def set_wincolor(color):
 def listDays(days=1):
     now = time.time()
     when = []
-    for day in xrange(days):
+    for day in range(days):
         when.append(time.strftime("%Y-%m-%d", time.localtime(now)))
         now -= 86400
     list(args, escape=False, listDone=True, matchAny=True, dates=when)
@@ -1016,19 +1016,19 @@ def listItemNo(items):
     tasks = getTaskDict()
     for item in items:
         if not item.isdigit(): 
-            print "Error: '%s' is not a valid task number" % item
+            print("Error: '%s' is not a valid task number" % item)
             sys.exit()
         item = int(item)
-        if (not tasks.has_key(item)):
-            print "%d: No such todo." % item
+        if (item not in tasks):
+            print("%d: No such todo." % item)
             continue
-        print "%3d: %s" % (item, tasks[item])
+        print("%3d: %s" % (item, tasks[item]))
 
 def rmExtension(item, attribute):
     """remove an extension attribue"""
     tasks = getTaskDict()
-    if (not tasks.has_key(item)):
-        print "%d: No such todo." % item
+    if (item not in tasks):
+        print("%d: No such todo." % item)
         sys.exit(1)
     newitem = tasks[item]
     extstart = newitem.find(" {" + attribute)
@@ -1058,8 +1058,8 @@ if __name__ == "__main__":
     try:
         opts, args = getopt.getopt(sys.argv[1:], 'fhpqvVinrt:d:', \
                 ['nc', 'help', 'version','theme=','todo-dir=', 'type='])
-    except (getopt.GetoptError), why:
-        print "Sorry - option not recognized.  Try -h for help"
+    except (getopt.GetoptError) as why:
+        print("Sorry - option not recognized.  Try -h for help")
         sys.exit()
 
     for o, a in opts:
@@ -1068,7 +1068,7 @@ if __name__ == "__main__":
         if o == '--help':
             help(longmessage=True)
         if o in ('-V', "--version"):
-            print __version__, __revision__[1:-1]
+            print(__version__, __revision__[1:-1])
             sys.exit()
         if o == '-v':
             verbose = True
@@ -1157,11 +1157,11 @@ if __name__ == "__main__":
         if (len(args) > 0):
             for a in args:
                 if not a.isdigit():
-                    print "Usage: " + sys.argv[0] + " doall <item_num> [item_num]..."
+                    print("Usage: " + sys.argv[0] + " doall <item_num> [item_num]...")
                     sys.exit()
             do(args)
         else:
-            print "Usage: " + sys.argv[0] + " doall <item_num> [item_num]..."
+            print("Usage: " + sys.argv[0] + " doall <item_num> [item_num]...")
     elif (action == "done"):
         if (args): done(" ".join(args))
         else:
@@ -1200,12 +1200,12 @@ if __name__ == "__main__":
             # remove the existing priority
             prioritize(int(args[0]), "")
         else:
-            print "Usage: " + sys.argv[0] + " pri <item_num> [PRIORITY]"
+            print("Usage: " + sys.argv[0] + " pri <item_num> [PRIORITY]")
     elif (action == "replace"):
         if (len(args) > 1 and args[0].isdigit()):
             replace(int(args[0]), " ".join(args[1:]))
         else:
-            print "Usage: " + sys.argv[0] + " replace <item_num> TEXT"
+            print("Usage: " + sys.argv[0] + " replace <item_num> TEXT")
     elif (action == "edit" or action == "e"):
         edit(TODO_FILE)
     elif (action == "edone" or action == "ed"):
@@ -1252,14 +1252,14 @@ if __name__ == "__main__":
         elif (len(args) > 1 and args[0].isdigit()):
             rmExtension(int(args[0]), args[1])
         else:
-            print "Usage: " + sys.argv[0] + " extension <item_num> TYPE [VALUE]"
+            print("Usage: " + sys.argv[0] + " extension <item_num> TYPE [VALUE]")
     elif (action in ["comment", "link", "resource"]):
         if (len(args) > 1 and args[0].isdigit()):
             addExtension(int(args[0]), action, " ".join(args[1:]))
         elif (len(args) > 0 and args[0].isdigit()):
             rmExtension(int(args[0]), action)
         else:
-            print "Usage: " + sys.argv[0] + " {comment,link,resource} <item_num> [VALUE]"
+            print("Usage: " + sys.argv[0] + " {comment,link,resource} <item_num> [VALUE]")
     elif (action == "percentdone"):
         if (len(args) > 1 and args[0].isdigit()):
             rmExtension(int(args[0]), "%done")
@@ -1267,7 +1267,7 @@ if __name__ == "__main__":
         elif (len(args) > 0 and args[0].isdigit()):
             rmExtension(int(args[0]), "%done")
         else:
-            print "Usage: " + sys.argv[0] + " percentdone <item_num> [PERCENT]"
+            print("Usage: " + sys.argv[0] + " percentdone <item_num> [PERCENT]")
     elif (action == "due"):
         if (len(args) > 1 and args[0].isdigit()):
             rmExtension(int(args[0]), "due")
@@ -1275,7 +1275,7 @@ if __name__ == "__main__":
         elif (len(args) > 0 and args[0].isdigit()):
             rmExtension(int(args[0]), "due")
         else:
-            print "Usage: " + sys.argv[0] + " due <item_num> [DATE]"
+            print("Usage: " + sys.argv[0] + " due <item_num> [DATE]")
     elif (action in ["starts","start"]):
         if (len(args) > 1 and args[0].isdigit()):
             rmExtension(int(args[0]), "start")
@@ -1283,7 +1283,7 @@ if __name__ == "__main__":
         elif (len(args) > 0 and args[0].isdigit()):
             rmExtension(int(args[0]), "start")
         else:
-            print "Usage: " + sys.argv[0] + " starts <item_num> [DATE]"
+            print("Usage: " + sys.argv[0] + " starts <item_num> [DATE]")
     elif (action == "wait"):
         if (len(args) > 1 and args[0].isdigit()):
             rmExtension(int(args[0]), "wait")
@@ -1291,7 +1291,7 @@ if __name__ == "__main__":
         elif (len(args) > 0 and args[0].isdigit()):
             rmExtension(int(args[0]), "wait")
         else:
-            print "Usage: " + sys.argv[0] + " wait <item_num> [for what]"
+            print("Usage: " + sys.argv[0] + " wait <item_num> [for what]")
     elif (action == "timeline" or action == "t"):
         timeline()
     else:

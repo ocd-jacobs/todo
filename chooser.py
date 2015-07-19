@@ -22,7 +22,7 @@ else:
     try:
         todo_dir = "%s/todo/" % os.environ['HOME']
     except:
-        print "Your todo directory cannot be found!"
+        print("Your todo directory cannot be found!")
 
 # Figure out what editor to use, if not that, default to vi
 try:
