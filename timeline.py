@@ -113,7 +113,7 @@ def main(argv):
             continue
         if begin <= rightnow:
             pending.append([item, begin, due])
-    pending.sort(lambda x,y: cmp(x[1],y[1]))
+    pending.sort(key=tl_cmp)
     maxlength = 0
     for p in pending:
         if len(p[0]) > maxlength: maxlength = len(p[0])
@@ -131,6 +131,9 @@ def main(argv):
                 + (rightnow - p[2]).days * "!" \
                 + "|" ,\
                 p[2].strftime("%m/%d")))
+
+def tl_cmp(x):
+    return(x[1])
 
 if __name__ == "__main__":
     main(sys.argv[1:])
