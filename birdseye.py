@@ -84,7 +84,7 @@ def printTaskGroups(title, taskDict, priorityList, percentages):
 def printTaskGroup(p, pctage, star):
     if pctage > -1:
         progressBar = ""
-        numStars = (pctage/10)
+        numStars = round(pctage/10)
         progressBar = "=" * numStars
         numSpaces = 10 - numStars
         for n in range(numSpaces):
@@ -120,6 +120,11 @@ def main(argv):
         projectPriority = []
         contextPriority = []
         for line in f:
+            # Skip blank lines Needed because somehow line endings
+            # are not handled correctly in todo.txt and empty
+            # lines get inserted.
+            if line.strip() == '':
+                continue
             todos += 1
             prioritized = False
             words = line.split()
