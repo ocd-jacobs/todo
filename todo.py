@@ -297,13 +297,12 @@ def help(longmessage = False):
 
   More on the todo.txt manager at
   http://todotxt.com
-  Version """ + __version__ + " " + __revision__[1:-1] + """
+  Version """ + __version__ + """
   Copyleft 2006, Gina Trapani (ginatrapani@gmail.com)
-  Copyleft 2006, Shane Koster (shane.koster@gmail.com)
 """
     else:
 
-        text = "todo.txt manager " + __version__ + " " + __revision__[1:-1] + """
+        text = "todo.txt manager " + __version__ + """
 Copyleft 2006  Gina Trapani, Shane Koster
 
 Usage: todo.py [options] [ACTION] [PARAM...]
@@ -1083,7 +1082,7 @@ if __name__ == "__main__":
         if o == '--help':
             help(longmessage=True)
         if o in ('-V', "--version"):
-            print(__version__, __revision__[1:-1])
+            print(__version__)
             sys.exit()
         if o == '-v':
             verbose = True
